@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create a Wiki Page</h1>
+  <hr>
+  <form class="creation-form" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="hidden" name="author" value="{{ user.id }}">
+      <input type="submit" value="Submit!">
+  </form>
+{% endblock %}
