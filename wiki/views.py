@@ -1,7 +1,11 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
+from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 
 from wiki.models import Page
 from wiki.forms import PageForm
@@ -37,10 +41,14 @@ class PageCreateView(FormView):
 
     def post(self, request):
         page_form = PageForm(request.POST)
-        page = page_form.save(commit=False)
-        page.author = User.object.get(id=request.POST['author'])
-        page.save()
-        return redirect(page)
+        if page_form .is_valid():
+            page = page_form.save(commit=False)
+            page.author = User.objects.get(id=request.POST['author'])
+            page.save()
+            return HttpResponseRedirect(reverse_lazy('wiki-create-page'))
+        else:
+            return render(request, self.template_name, {'form': page_form})
+
 
     def form_vaild(self, form):
         return super().form_valid(form)
